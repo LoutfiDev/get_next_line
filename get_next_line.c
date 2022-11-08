@@ -6,60 +6,55 @@
 /*   By: yloutfi <yloutfi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/05 09:27:58 by yloutfi           #+#    #+#             */
-/*   Updated: 2022/11/06 21:23:22 by yloutfi          ###   ########.fr       */
+/*   Updated: 2022/11/08 21:46:59 by yloutfi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-static char	*get_line(char *buffer)
+char	*ft_get_line(char *haystack, char *line)
 {
-	char	*line;
 	int		i;
 
 	i = 0;
-	if (*buffer == '\0')
-		return (NULL);
-	line = malloc((ft_strlen(buffer) + 1) * sizeof(char));
-	while (buffer[i] != '\0')
+	while (haystack[i] != '\n')
+		i++;
+	line = malloc((i + 1) * sizeof(char));
+	i = 0;
+	while (haystack[i] != '\n')
 	{
-		if (buffer[i] == '\n')
-		{
-			line[i++] = '\n';
-			break ;
-		}
-		line[i] = buffer[i];
+		line[i] = haystack[i];
 		i++;
 	}
-	line[i] = '\0';
+	line[i] = '\n';
+	line[i + 1] = '\0';
+	haystack = ft_substr(haystack, ft_strlen(line), ft_strlen(haystack));
 	return (line);
 }
 
 char	*get_next_line(int fd)
 {
-	static char	*buff;
-	char		*line;
+	static char	*haystack;
+	char		*buff;
 	int			bytes_read;
-	int			line_len;
 
-	if (BUFFER_SIZE <= 0 || fd < 0)
+	if (BUFFER_SIZE < 0 || fd < 0)
 		return (NULL);
-	bytes_read = 0;
+	buff = malloc((BUFFER_SIZE + 1) * sizeof(char));
 	if (!buff)
-	{
-		buff = malloc((BUFFER_SIZE + 1) * sizeof(char));
-		bytes_read = read(fd, buff, BUFFER_SIZE);
-		if (!bytes_read)
-			return (NULL);
-		buff[bytes_read] = 0;
-	}
-	line = malloc((bytes_read + 1) * sizeof(char));
-	line = get_line(buff);
-	if (!line)
 		return (NULL);
-	line_len = ft_strlen(line);
-	buff = strdup(buff + line_len);
-	return (line);
+	bytes_read = -1;
+	while (!ft_memchr(buff, '\n', BUFFER_SIZE) && bytes_read != 0)
+	{
+		bytes_read = read(fd, buff, BUFFER_SIZE);
+		buff[bytes_read] = 0;
+		if (bytes_read < 0)
+			return (NULL);
+		haystack = ft_strjoin(haystack, buff);
+	}
+	free(buff);
+	ft_get_line(haystack, buff);
+	return (buff);
 }
 
 int	main(void)
@@ -70,11 +65,12 @@ int	main(void)
 
 	fd = open("test.txt", O_RDONLY, 0);
 	i = 0;
-	while (i < 9)
-	{	
+	while (i < 3)
+	{
 		buffer = get_next_line(fd);
 		printf("%s", buffer);
 		i++;
 	}
+
 	return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: yloutfi <yloutfi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/05 09:27:52 by yloutfi           #+#    #+#             */
-/*   Updated: 2022/11/12 16:08:05 by yloutfi          ###   ########.fr       */
+/*   Updated: 2022/11/13 10:41:48 by yloutfi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,10 +21,6 @@
 # include <fcntl.h>  
 # include <stdlib.h>
 # include <limits.h>
-/*----just for test-----*/
-# include <stdio.h>
-# include <string.h>
-/*----------------------*/
 
 char	*get_next_line(int fd);
 int		ft_strlen(char *str);

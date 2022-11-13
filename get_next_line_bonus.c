@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*   get_next_line_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: yloutfi <yloutfi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/05 09:27:58 by yloutfi           #+#    #+#             */
-/*   Updated: 2022/11/12 15:51:04 by yloutfi          ###   ########.fr       */
+/*   Updated: 2022/11/13 10:35:26 by yloutfi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 
 static void	ft_bzero(void *s, size_t n)
 {
@@ -94,17 +94,17 @@ static char	*ft_read(int fd, char *store)
 
 char	*get_next_line(int fd)
 {
-	static char	*store;
+	static char	*store[OPEN_MAX];
 	char		*line;
 	char		*haystack;
 
 	if (BUFFER_SIZE <= 0 || fd < 0)
 		return (NULL);
-	haystack = ft_read(fd, store);
+	haystack = ft_read(fd, store[fd]);
 	if (!haystack)
-		free(store);
+		free(store[fd]);
 	line = ft_get_line(haystack);
-	store = ft_substr(haystack, ft_strlen(line), ft_strlen(haystack));
+	store[fd] = ft_substr(haystack, ft_strlen(line), ft_strlen(haystack));
 	free(haystack);
 	return (line);
 }
